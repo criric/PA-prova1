@@ -181,10 +181,16 @@ int main()
   {
     for (j = 7; j >= 0; j--)
     {
+      // Conversão de matriz de char para int
       unsigned long long aux = matriz[i][j];
+
+      // A cada iteração, aux será multiplicado por (7-j)^2
       soma += aux << 7 - j;
     }
-    state += soma << 8 * (7 - i);
+    // A cada iteração soma será multiplicado por (8*(7-i))^2
+    state += soma << x * (7 - i);
+
+    // Soma é zerado para começar a iteração na próxima linha
     soma = 0;
   }
 

@@ -1,23 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void criaMatriz() // Function to create 3d matrix
+void criaMatriz() // Função para criar matriz 3d
 {
-  int ***m;
+  // Declaração de matriz e suas dimensões
+  int ***matriz;
   int x, y, z, i, j, k, r1, r2, r3;
 
-  // Number of lines
+  // Número de linhas
   printf("Digite o número de linhas:");
   scanf("%d", &y);
 
-  // Number of columns
+  // Número de colunas
   printf("Digite o número de colunas:");
   scanf("%d", &z);
 
-  // depth
+  // Profundidade do paralelepipedo
   printf("Digite a largura do paralelepipedo:");
   scanf("%d", &x);
 
+  // Raios do elipsoide
   printf("Raio 1:");
   scanf("%d", &r1);
 
@@ -27,25 +29,28 @@ void criaMatriz() // Function to create 3d matrix
   printf("Raio 3:");
   scanf("%d", &r3);
 
-  m = malloc(x * sizeof(int **));
+  // Alocação dinâmica da matriz
+  matriz = malloc(x * sizeof(int **));
 
   for (i = 0; i < x; i++)
   {
-    m[i] = malloc(y * sizeof(int *));
+    matriz[i] = malloc(y * sizeof(int *));
   }
 
   for (i = 0; i < x; i++)
   {
     for (j = 0; j < y; j++)
     {
-      m[i][j] = malloc(z * sizeof(int));
+      matriz[i][j] = malloc(z * sizeof(int));
     }
   }
 
+  // Declaração do centro da elipsoide
   float m_centro_x = x / 2;
   float m_centro_y = y / 2;
   float m_centro_z = z / 2;
 
+  // Iteração que verifica se a posição da matriz está dentro do elipsoide
   for (i = 0; i < x; i++)
   {
     for (j = 0; j < y; j++)
@@ -54,46 +59,50 @@ void criaMatriz() // Function to create 3d matrix
       {
         if (pow(((i - m_centro_x) / r1), 2) + pow(((j - m_centro_y) / r2), 2) + pow(((k - m_centro_z) / r3), 2) <= 1)
         {
-          m[i][j][k] = 1;
+          matriz[i][j][k] = 1;
         }
         else
         {
-          m[i][j][k] = 0;
+          matriz[i][j][k] = 0;
         }
       }
     }
   }
 
-  for (i = 0; i < x; i++)
+  // Seleção do plano que será mostrado
+  int plano_escolhido;
+  printf("Qual plano deseja ver:");
+  scanf("%d", &plano_escolhido);
+
+  // Print do plano selecionado
+  for (j = 0; j < y; j++)
   {
-    for (j = 0; j < y; j++)
+    for (k = 0; k < z; k++)
     {
-      for (k = 0; k < z; k++)
-      {
-        printf("%2d ", m[i][j][k]);
-      }
-      printf("\n");
+      printf("%2d ", matriz[plano_escolhido][j][k]);
     }
     printf("\n");
   }
+  printf("\n");
 
+  // Liberar a memória da matriz alocada anteriormente
   for (i = 0; i < x; i++)
   {
     for (j = 0; j < y; j++)
     {
-      free(m[i][j]);
+      free(matriz[i][j]);
     }
   }
   for (i = 0; i < x; i++)
   {
-    free(m[i]);
+    free(matriz[i]);
   }
 
-  free(m);
+  free(matriz);
 }
 
 int main()
 {
-  criaMatriz();
+  criaMatriz(); // Chama a função
   return 0;
 }

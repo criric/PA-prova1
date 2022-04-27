@@ -1,15 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 
 void printbyte(unsigned char c)
 {
   unsigned char i;
-  unsigned char cu;
+  unsigned char and;
   for (i = 128; i > 0; i = i >> 1)
   {
-    cu = i & c;
-    if (cu)
+    and = i & c;
+    if (and)
     {
       printf("1");
     }
@@ -22,50 +21,71 @@ void printbyte(unsigned char c)
 
 int main()
 {
-  int i, j;
-  unsigned long long x = 0;
+
+  // Declaro matriz, ponteiro e variável utilizada para representar o número inteiro
+  unsigned char **matriz;
   unsigned char *px;
+  unsigned long long int state;
+  int i, j;
+  int x = 8;
+  int y = 8;
+  state = 0;
+  px = &state;
 
-  unsigned char c[8][8];
+  // faço alocação dinâmica da matriz
+  matriz = (unsigned char **)malloc(x * sizeof(unsigned char *));
+  matriz[0] = (unsigned char *)malloc(x * y * sizeof(unsigned char));
 
-  //  c = (unsigned char **)malloc(8 * sizeof(unsigned char));
-  //
-  //  for (i = 0; i < 8; i++)
-  //  {
-  //    c[i] = (unsigned char *)malloc(8 * sizeof(unsigned char));
-  //  }
-
-  for (i = 0; i < 8; i++)
+  for (i = 1; i < x; i++)
   {
-    for (j = 0; j < 8; j++)
+    matriz[i] = matriz[i - 1] + x;
+  }
+
+  // Preencho a matriz com 0 e 1
+  for (i = 0; i <= 7; i++)
+  {
+    for (j = 0; j <= 7; j++)
     {
-      c[i][j] = rand() % 2;
+      matriz[i][j] = rand() % 2;
     }
   }
 
-  int pot = 0;
-
-  for (i = 4; i >= 0; i--)
+  // Printo minha matriz
+  for (i = 0; i <= 7; i++)
   {
-    for (j = 4; j >= 0; j--)
+    for (j = 0; j <= 7; j++)
     {
-      x = x + (pow(2, pot) * c[i][j]);
-      pot++;
+      printf("%d ", matriz[i][j]);
     }
+    printf("\n");
+  }
+
+  // Faço as iterações para que a variável soma receba o valor de cada linha, para depois passar para a variável state
+  unsigned long long soma = 0;
+
+  for (i = 7; i >= 0; i--)
+  {
+    for (j = 7; j >= 0; j--)
+    {
+      unsigned long long aux = matriz[i][j];
+      soma += aux << 7 - j;
+    }
+    state += soma << 8 * (7 - i);
+    soma = 0;
+  }
+
+  // Printo a sequência de bytes
+  for (i = 7; i >= 0; i--)
+  {
+    printbyte(px[i]);
     printf("|");
   }
-  printf("\n");
-  printf("%d\n", x);
 
-  // printf("\n");
-  // for (i = 7; i >= 0; i--)
-  // {
-  //   for (j = 7; j >= 0; j--)
-  //   {
-  //     printbyte(c[i][j]);
-  //     printf("|");
-  //   }
-  // }
-  printf("\n");
+  // libero a matriz
+  for (i = 1; i <= 7; i++)
+  {
+    free(matriz[i]);
+  }
+  free(matriz);
   return 0;
 }
